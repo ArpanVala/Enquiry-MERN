@@ -2,8 +2,8 @@ import React from 'react'
 
 const EnquiryList = () => {
   return (
-    <table class='table table-striped'>
-      <thead class='table-dark'>
+    <table className='table table-striped'>
+      <thead className='table-dark'>
         <tr>
           <th scope='col'>sr.</th>
           <th scope='col'>Name</th>

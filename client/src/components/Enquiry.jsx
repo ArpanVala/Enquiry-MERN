@@ -1,14 +1,22 @@
 import React from 'react'
+import axios from 'axios';
 import EnquiryList from './EnquiryList';
 
 const Enquiry = () => {
   const formSubmitted = (e) =>{
     e.preventDefault();
-    let name = e.target.name.value;
-    let email = e.target.email.value;
-    let phone = e.target.phone.value;
-    let msg = e.target.msg.value;
-    alert(name + "\n" + email + "\n" + phone + "\n" + msg);
+    const formData ={
+      "name":e.target.name.value,
+      "email":e.target.email.value,
+      "phone":e.target.phone.value,
+      "msg":e.target.msg.value
+    }
+    console.log(formData);
+    axios.post('http://localhost:8000/api/insert',formData).then((res)=>{
+      console.log(res);
+      alert("Hello "+ formData.name + " your enquiry has been submitted successfully"); 
+    })
+    
   }
 
   return (
@@ -30,8 +38,9 @@ const Enquiry = () => {
                   className='form-control'
                   id='floatingInput'
                   placeholder='Enter your name'
+                  required
                 />
-                <label for='floatingInput'>Name</label>
+                <label htmlFor='floatingInput'>Name</label>
               </div>
               <div className='form-floating mb-3'>
                 <input
@@ -40,8 +49,9 @@ const Enquiry = () => {
                   className='form-control'
                   id='floatingEmail'
                   placeholder='Enter your email'
+                  required
                 />
-                <label for='floatingEmail'>Email</label>
+                <label htmlFor='floatingEmail'>Email</label>
               </div>
                <div className='form-floating mb-3'>
                 <input
@@ -51,14 +61,15 @@ const Enquiry = () => {
                   id='floatingPhone'
                   maxLength={10}
                   placeholder='Enter your Phone number'
+                  required
                 />
-                <label for='floatingPhone'>Phone</label>
+                <label htmlFor='floatingPhone'>Phone</label>
               </div>
-              <div class="form-floating mb-3">
-                <textarea class="form-control" name="msg" placeholder="Leave a message here" id="floatingTextarea" ></textarea>
-                <label for="floatingTextarea">Message</label>
+              <div className="form-floating mb-3">
+                <textarea className="form-control" name="msg" placeholder="Leave a message here" id="floatingTextarea" required></textarea>
+                <label htmlFor="floatingTextarea">Message</label>
               </div>
-               <button type="submit" class="btn btn-lg btn-dark w-100 " onSubmit={formSubmitted}>Submit</button>
+               <button type="submit" className="btn btn-lg btn-dark w-100 " onSubmit={formSubmitted}>Submit</button>
             </form>
 
             </div>
