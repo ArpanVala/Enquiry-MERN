@@ -9,18 +9,18 @@ let enquiryInsert = (req,res)=>{
         msg
     })
     enquiry.save().then((data)=>{
-        res.send({message:"Enquiry inserted",data})
+        res.send({statusCode:1,message:"Enquiry inserted",data})
     }).catch((err)=>{
-        res.send({message:err.message})
+        res.send({statusCode:0,message:err.message})
     })
 }
 
 let enquiryView = (req,res)=>{
     enquiryModel.find().then((data)=>{
-        res.send(data)
+        res.send({statusCode:1,enquiryList:data})
 
     }).catch((err)=>{
-        res.send({message:err.message})
+        res.send({statusCode:0,message:err.message})
     })
 
 }
@@ -28,9 +28,9 @@ let enquiryView = (req,res)=>{
 let enquiryDelete = (req,res)=> {
     let id = req.params.id;
     enquiryModel.deleteOne({_id:id}).then(()=>{
-        res.send(`${id} enquiry deleted`)
+        res.send({statusCode:1,message:`${id} enquiry deleted`})
     }).catch((err)=>{
-        res.send({message:err.message})
+        res.send({statusCode:0,message:err.message})
     })
 }   
 
@@ -43,9 +43,9 @@ let enquiryUpdate = (req,res)=>{
         phone,
         msg
     }).then(()=>{
-        res.send(`${id} enquiry updated`)
+        res.send({statusCode:1,message:`${id} enquiry updated`})
     }).catch((err)=>{
-        res.send({message:err.message})
+        res.send({statusCode:0,message:err.message})
     })
 }
 

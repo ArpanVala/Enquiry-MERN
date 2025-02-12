@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {ToastContainer, toast} from 'react-toastify';
 import axios from 'axios';
 import EnquiryList from './EnquiryList';
 
 const Enquiry = () => {
+  const [enquiryList, setEnquiryList] = useState([]);
   const [formData, setFormData] = useState({
     'name':'',
     'email':'',
@@ -28,12 +29,47 @@ const Enquiry = () => {
    
     console.log(formData);
     axios.post('http://localhost:8000/api/insert',formData).then((res)=>{
-      console.log(res);
-      alert("Hello "+ formData.name + " your enquiry has been submitted successfully"); 
-      toast.success('Enquiry submitted successfully');
+      if(res.data.statusCode){
+        toast.success('Enquiry submitted successfully');
+      }
+      else{
+        alert(res.data.message);
+        toast.error(res.data.message);
+      }
+    }).catch((e)=>{
+      toast.error(e)
+    })
+    setFormData({
+      'name':'',
+      'email':'',
+      'phone':'',
+      'msg':''
+    })
+  }
+
+  const getEnquiryData = () =>{
+    axios.get('http://localhost:8000/api/view')
+    .then((res)=>{
+      return res.data;
+    })
+    .then((enquiryListData)=>{
+      if(enquiryListData.statusCode){
+        setEnquiryList(enquiryListData.enquiryList);
+      }
+      else{
+        alert(enquiryListData.message);
+      }
+    })
+    .catch((e)=>{
+      alert(e);
+      toast.error(e);
     })
     
   }
+
+  useEffect(()=>{
+    getEnquiryData();
+  },[formData])
 
   return (
     <>
@@ -97,7 +133,7 @@ const Enquiry = () => {
 
             </div>
             <div className="col-8">
-             <EnquiryList/>
+             <EnquiryList data={enquiryList}/>
             </div>
           </div>
         </div>
