@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {ToastContainer, toast} from 'react-toastify';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 import axios from 'axios';
 import EnquiryList from './EnquiryList';
 
@@ -27,13 +28,20 @@ const Enquiry = () => {
   const formSubmitted = (e) =>{
     e.preventDefault();
    
-    console.log(formData);
     axios.post('http://localhost:8000/api/insert',formData).then((res)=>{
       if(res.data.statusCode){
-        toast.success('Enquiry submitted successfully');
+        Swal.fire({
+          title: 'Enquiry added !',
+          text: 'Enquiry has been added.',
+          icon: 'success',
+        })
       }
       else{
-        alert(res.data.message);
+         Swal.fire({
+          title: 'Error occured',
+          text: res.data.message,
+          icon: 'error',
+        })
         toast.error(res.data.message);
       }
     }).catch((e)=>{
@@ -69,7 +77,7 @@ const Enquiry = () => {
 
   useEffect(()=>{
     getEnquiryData();
-  },[formData])
+  },[formData,enquiryList])
 
   return (
     <>
@@ -133,7 +141,7 @@ const Enquiry = () => {
 
             </div>
             <div className="col-8">
-             <EnquiryList data={enquiryList} getEnquiryData={getEnquiryData}/>
+             <EnquiryList data={enquiryList} getEnquiryData={getEnquiryData} Swal={Swal}/>
             </div>
           </div>
         </div>

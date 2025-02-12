@@ -1,13 +1,27 @@
 import React from 'react'
-import axios from 'axios';
-import {toast,ToastContainer} from 'react-toastify';
-const EnquiryList = ({data,getEnquiryData}) => {
+import axios from 'axios'
+import { toast } from 'react-toastify'
+const EnquiryList = ({ data, getEnquiryData, Swal }) => {
   const deleteRow = (id) => {
-    console.log("id :",id)
-    axios.delete(`http://localhost:8000/api/delete/${id}`)
+    Swal.fire({
+      title: 'Are you sure you want to delete?',
+      icon:'error',
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        axios.delete(`http://localhost:8000/api/delete/${id}`)
     .then((res) => {
       if(res.data.statusCode){
-        toast.success(res.data.message);
+          Swal.fire({
+          title: 'Deleted!',
+          text: 'Enquiry has been deleted.',
+          icon: 'success',
+        })
         getEnquiryData();
       }
       else{
@@ -17,12 +31,17 @@ const EnquiryList = ({data,getEnquiryData}) => {
     .catch((e) => {
       toast.error(e);
     })
+
+
+  
+      }
+    })
+
+
   }
 
   return (
-
     <table className='table table-striped'>
-
       <thead className='table-dark'>
         <tr>
           <th scope='col'>sr.</th>
@@ -34,26 +53,32 @@ const EnquiryList = ({data,getEnquiryData}) => {
         </tr>
       </thead>
       <tbody>
-        {
-          data.length < 1 ? (
-            <tr>
-              <td colSpan='6' className='text-center'>No data found!</td>
+        {data.length < 1 ? (
+          <tr>
+            <td colSpan='6' className='text-center'>
+              No data found!
+            </td>
+          </tr>
+        ) : (
+          data.map((item, index) => (
+            <tr key={index}>
+              <th scope='row'>{index + 1}</th>
+              <td>{item.name}</td>
+              <td>{item.email}</td>
+              <td>{item.phone}</td>
+              <td>{item.msg}</td>
+              <td>
+                <button
+                  className='btn btn-sm btn-danger me-2'
+                  onClick={() => deleteRow(item._id)}
+                >
+                  delete
+                </button>
+                <button className='btn btn-sm btn-primary'>edit</button>
+              </td>
             </tr>
-          ) : 
-            data.map((item, index) => (
-               <tr key={index}>
-                <th scope='row'>{index + 1}</th>
-                <td>{item.name}</td>
-                <td>{item.email}</td>
-                <td>{item.phone}</td>
-                <td>{item.msg}</td>
-                <td>
-                  <button className='btn btn-sm btn-danger me-2' onClick={()=> deleteRow(item._id)}>delete</button>
-                  <button className='btn btn-sm btn-primary'>edit</button>
-                </td>
-              </tr>
-            ))
-        }
+          ))
+        )}
       </tbody>
     </table>
   )
