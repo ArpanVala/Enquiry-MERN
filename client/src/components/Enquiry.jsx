@@ -133,7 +133,7 @@ const Enquiry = () => {
 
             </div>
             <div className="col-8">
-             <EnquiryList data={enquiryList}/>
+             <EnquiryList data={enquiryList} getEnquiryData={getEnquiryData}/>
             </div>
           </div>
         </div>
