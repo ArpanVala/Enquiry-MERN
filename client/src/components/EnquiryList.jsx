@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-const EnquiryList = ({ data, getEnquiryData, Swal }) => {
+const EnquiryList = ({ data, getEnquiryData, Swal ,setFormData}) => {
   const deleteRow = (id) => {
     Swal.fire({
       title: 'Are you sure you want to delete?',
@@ -40,6 +40,14 @@ const EnquiryList = ({ data, getEnquiryData, Swal }) => {
 
   }
 
+  const editRow =(editid) => {
+    axios.get(`http://localhost:8000/api/single/${editid}`)
+    .then((res) => {
+      let data = res.data;
+      setFormData(data.enquiry);
+    })
+  }
+
   return (
     <table className='table table-striped'>
       <thead className='table-dark'>
@@ -74,7 +82,9 @@ const EnquiryList = ({ data, getEnquiryData, Swal }) => {
                 >
                   delete
                 </button>
-                <button className='btn btn-sm btn-primary'>edit</button>
+                <button className='btn btn-sm btn-primary'
+                onClick={() => editRow(item._id)}
+                >edit</button>
               </td>
             </tr>
           ))

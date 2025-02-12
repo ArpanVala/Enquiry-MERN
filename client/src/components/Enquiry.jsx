@@ -10,9 +10,10 @@ const Enquiry = () => {
     'name':'',
     'email':'',
     'phone':'',
-    'msg':''
+    'msg':'',
+    '_id':''
   })
-
+                                
   const getvalue = (e) =>{
     setFormData({...formData,[e.target.name]:e.target.value})
     // or simply
@@ -27,31 +28,55 @@ const Enquiry = () => {
 
   const formSubmitted = (e) =>{
     e.preventDefault();
-   
-    axios.post('http://localhost:8000/api/insert',formData).then((res)=>{
-      if(res.data.statusCode){
-        Swal.fire({
-          title: 'Enquiry added !',
-          text: 'Enquiry has been added.',
-          icon: 'success',
-        })
-      }
-      else{
-         Swal.fire({
-          title: 'Error occured',
-          text: res.data.message,
-          icon: 'error',
-        })
-        toast.error(res.data.message);
-      }
-    }).catch((e)=>{
-      toast.error(e)
-    })
-    setFormData({
+    if(formData._id){
+      axios.put(`http://localhost:8000/api/update/${formData._id}`,formData).then((res)=>{
+        if(res.data.statusCode){
+          Swal.fire({
+            title: 'Enquiry updated !',
+            text: 'Enquiry has been updated.',
+            icon: 'success',
+          })
+        }
+        else{
+          Swal.fire({
+            title: 'Error occured',
+            text: res.data.message,
+            icon: 'error',
+          })
+          toast.error(res.data.message);
+        }
+      }).catch((e)=>{
+        toast.error(e)
+      })
+    }
+    else{
+      axios.post('http://localhost:8000/api/insert',formData).then((res)=>{
+        if(res.data.statusCode){
+          Swal.fire({
+            title: 'Enquiry added !',
+            text: 'Enquiry has been added.',
+            icon: 'success',
+          })
+        }
+        else{
+          Swal.fire({
+            title: 'Error occured',
+            text: res.data.message,
+            icon: 'error',
+          })
+          toast.error(res.data.message);
+        }
+      }).catch((e)=>{
+        toast.error(e)
+      })
+    }
+    getEnquiryData();
+      setFormData({
       'name':'',
       'email':'',
       'phone':'',
-      'msg':''
+      'msg':'',
+      '_id':''
     })
   }
 
@@ -77,7 +102,7 @@ const Enquiry = () => {
 
   useEffect(()=>{
     getEnquiryData();
-  },[formData,enquiryList])
+  },[formData])
 
   return (
     <>
@@ -87,6 +112,7 @@ const Enquiry = () => {
         <div className="row mb-4">
           <div className="col text-center">
             <h1>Enquiry portal</h1>
+            <p>{formData._id || "ID"}</p>
           </div>
         </div>
           <div className='row'>
@@ -136,12 +162,12 @@ const Enquiry = () => {
                 <textarea  onChange={getvalue} value={formData.msg} className="form-control" name="msg" placeholder="Leave a message here" id="floatingTextarea" required></textarea>
                 <label htmlFor="floatingTextarea">Message</label>
               </div>
-               <button type="submit" className="btn btn-lg btn-dark w-100 " onSubmit={formSubmitted}>Submit</button>
+               <button type="submit" className="btn btn-lg btn-dark w-100 " onSubmit={formSubmitted}>{formData._id ? 'Update' : 'Add'}</button>
             </form>
 
             </div>
             <div className="col-8">
-             <EnquiryList data={enquiryList} getEnquiryData={getEnquiryData} Swal={Swal}/>
+             <EnquiryList data={enquiryList} getEnquiryData={getEnquiryData} Swal={Swal} setFormData={setFormData} />
             </div>
           </div>
         </div>

@@ -49,4 +49,13 @@ let enquiryUpdate = (req,res)=>{
     })
 }
 
-module.exports = {enquiryInsert,enquiryView,enquiryDelete,enquiryUpdate}
+let enquirySingleRow = (req,res)=>{
+    let id = req.params.id;
+    enquiryModel.findOne({_id:id}).then((data)=>{
+        res.send({statusCode:1,enquiry:data})
+    }).catch((err)=>{
+        res.send({statusCode:0,message:err.message})
+    })
+}
+
+module.exports = {enquiryInsert,enquiryView,enquiryDelete,enquiryUpdate,enquirySingleRow}
